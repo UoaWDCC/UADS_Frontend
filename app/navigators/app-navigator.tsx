@@ -45,7 +45,7 @@ const AppStack = () => {
   return (
       <Stack.Navigator
         screenOptions={{
-          headerShown: true, //on for testing so i can see which screen I am on 
+          headerShown: true, // on for testing so i can see which screen I am on 
         }}
         initialRouteName="login"
       > 
@@ -74,7 +74,7 @@ const AppTab = () => {
   )
 }
 
-var isLoggedIn = true
+const isLoggedIn = true
 
 export const AppNavigator = React.forwardRef<
   NavigationContainerRef,
