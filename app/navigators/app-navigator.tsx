@@ -23,7 +23,14 @@ import {
   LoadingScreen,
   ComingSoonScreen
 } from "../screens"
+import { width } from "styled-system"
+import { Image } from "react-native"
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import SettingsIcon from '@mui/icons-material/Settings';
+import InfoIcon from '@mui/icons-material/Info';
 
+const uadsLogo = require("../components/logo/logos/logo.png")
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
  * as well as what properties (if any) they might take when navigating to them.
@@ -103,13 +110,33 @@ const AppTab = () => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarShowLabel: false,
       }}
-    >
-      <Tab.Screen name="home" component={ComingSoonScreen} />
-      <Tab.Screen name="about" component={ComingSoonScreen} />
-      <Tab.Screen name="offers" component={OffersScreen} />
-      <Tab.Screen name="settings" component={ComingSoonScreen} />
-      <Tab.Screen name="sponsors" component={AppSponsorScreen} />
+    > 
+      <Tab.Screen name="about" component={ComingSoonScreen}
+        options={{
+          tabBarIcon: () => (<InfoIcon/>)
+        }}
+      />
+      <Tab.Screen name="offers" component={OffersScreen}
+        options={{
+          tabBarIcon: () => (<LocalOfferIcon/>)
+        }}
+      />
+       <Tab.Screen name="home" component={ComingSoonScreen}
+        options={{
+          tabBarIcon: () => (<Image source={uadsLogo} style={{width: 20, height: 20}} />)
+        }} />  
+      <Tab.Screen name="settings" component={ComingSoonScreen}
+        options={{
+          tabBarIcon: () => (<SettingsIcon/>)
+        }}
+      />
+      <Tab.Screen name="sponsors" component={AppSponsorScreen}
+        options={{
+          tabBarIcon: () => (<HandshakeIcon/>)
+        }}
+      />
     </Tab.Navigator>
   )
 }

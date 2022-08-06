@@ -5,9 +5,7 @@ import { Screen, Text, AutoImage as Image } from "../../components"
 import "firebase/auth"
 import { color } from "../../theme"
 import { Box, NativeBaseProvider } from "native-base"
-
 const uadsLogo = require("../../components/logo/logos/logo.png")
-
 const sWidth = Dimensions.get("window").width
 const sHeight = Dimensions.get("window").height
 
