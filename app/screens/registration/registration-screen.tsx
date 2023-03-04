@@ -12,7 +12,6 @@ import { AuthContext } from "../../../context/AuthContext"
 import axios from "axios"
 import { BASE_URL } from "@env"
 import eligibility from "../../../eligibility.json"
-import { position } from "styled-system"
 
 const sWidth = Dimensions.get("window").width
 const sHeight = Dimensions.get("window").height
@@ -120,51 +119,45 @@ export const RegistrationScreen = observer(function RegistrationScreen() {
       setText("Enter details to signup!")
       setShowModal(true)
     } else {
-      let inDatabase = false
-      for (let key in eligibility) {
-        if (key.toLocaleLowerCase() === upi.toLocaleLowerCase()) {
-          inDatabase = true
-          if (eligibility[key].App_Eligible === "y") {
-            await firebase
-              .auth()
-              .createUserWithEmailAndPassword(upi + "@aucklanduni.ac.nz", password)
-              .then((res) => {
-                res.user.getIdToken(true).then(function (idToken) {
-                  // Send token to your backend via HTTPS
-                  // ...
-                  axios.post(
-                    BASE_URL + "/users",
-                    {
-                      upi: upi,
-                      firstName: firstName,
-                      lastName: lastName,
-                      university: "University of Auckland",
-                      gradLevel: gradLevel,
-                    },
-                    {
-                      headers: {
-                        "auth-token": idToken,
-                      },
-                    },
-                  )
-                  console.log("User registered successfully!")
-                  signUp(res)
-                })
-              })
-              .catch((error) => {
-                setText(error.message)
-                setShowModal(true)
-              }) // 405 error in backend terminal when posted
-          } else {
-            // User in database but not paid
-            setText("Please talk to an exec about membership payment")
+      const eligible = await axios.get(
+        BASE_URL + "/users/" + upi.toLocaleLowerCase() + "/isEligible",
+        {
+          headers: {
+            "auth-token": 1,
+          },
+        },
+      )
+      if (eligible) {
+        await firebase
+          .auth()
+          .createUserWithEmailAndPassword(upi.toLocaleLowerCase() + "@aucklanduni.ac.nz", password)
+          .then((res) => {
+            res.user.getIdToken(true).then(function (idToken) {
+              // Send token to your backend via HTTPS
+              axios.post(
+                BASE_URL + "/users",
+                {
+                  upi: upi,
+                  firstName: firstName,
+                  lastName: lastName,
+                  university: "University of Auckland",
+                  gradLevel: gradLevel,
+                },
+                {
+                  headers: {
+                    "auth-token": idToken,
+                  },
+                },
+              )
+              console.log("User registered successfully!")
+              signUp(res)
+            })
+          })
+          .catch((error) => {
+            setText(error.message)
             setShowModal(true)
-          }
-          break
-        }
-      }
-      // User not in database
-      if (!inDatabase) {
+          }) // 405 error in backend terminal when posted
+      } else {
         setText("Invalid member. Please sign up to UADS.")
         setShowModal(true)
       }
